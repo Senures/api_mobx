@@ -1,21 +1,45 @@
-import 'dart:developer';
-
 import 'package:mobx/mobx.dart';
+import 'package:movie_app_mobx/core/entity/detail_models.dart';
 import 'package:movie_app_mobx/core/entity/popular_movie_models.dart';
 import 'package:movie_app_mobx/features/services/app_services.dart';
 part 'home_view_model.g.dart';
 
 class HomeViewModel = _HomeViewModelBase with _$HomeViewModel;
 
+/// buraya bişey eklersen
+/// altta watch diye bişey var ona tıklaman lazım
+/// sonra o da ne yapacak kon generate edicek
+/// isloading vs şeylerin gelmesi için anladın mı ?
+/// he yeni eklenen şeylerin .g dart dosyasına eklenmesi için mi
+/// aynen öyle aşkım ya tüm gün bunla ugrastık
+/// foto path yanlıştı onuda düzenledim haberin olsun tamam  ben hızlcıa çekim detayınıda sana sorum olursa derim
 abstract class _HomeViewModelBase with Store {
   @observable
   PopularMoviesResponse? popularResponse;
+
+  @observable
+  DetailResponse? detailResponse;
+
+  @observable
+  bool isLoading = false;
   //bunun değeri boşken dolucak değişicek o yüzden observable
 
+//notify listener aynı mantık
   @action
-  //notify listener aynı mantık
   getPopularMovies() async {
+    isLoading = true;
     popularResponse = await AppServices().getPopularMovie();
-    log(popularResponse!.toJson().toString());
+    print(popularResponse!.results![0].posterPath.toString());
+    // print("========================  " + popularResponse!.toJson().toString());
+    isLoading = false;
+  }
+
+  @action
+  getDetailMovies(String id) async {
+    isLoading = true;
+    detailResponse = await AppServices().getDetailMovie(id);
+    print(detailResponse!.toJson());
+    // print("========================  " + popularResponse!.toJson().toString());
+    isLoading = false;
   }
 }

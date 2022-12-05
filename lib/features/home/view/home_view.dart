@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:movie_app_mobx/core/base/base_view.dart';
 import 'package:movie_app_mobx/features/detail/view/detail_view.dart';
 import 'package:movie_app_mobx/features/home/view/view_model/home_view_model.dart';
@@ -21,6 +22,8 @@ class HomePageView extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
+                  // MODELVIEW A BİŞET EKLEDİĞİN ZAMAN
+                  // WATCH AKTİF ET nasıl ya
                   SafeArea(
                     child: Container(
                       width: MediaQuery.of(context).size.width,
@@ -59,39 +62,47 @@ class HomePageView extends StatelessWidget {
                       ),
                     ),
                   ),
+                  // YEMEK YİCEM GELİRİM.....
                   Container(
                       height: MediaQuery.of(context).size.height * 0.5,
                       //color: Colors.black,
-                      child: ListView.builder(
-                        scrollDirection: Axis.horizontal,
-                        itemCount: 5,
-                        itemBuilder: (context, index) {
-                          return InkWell(
-                            onTap: () {
-                              Navigator.push<void>(
-                                context,
-                                MaterialPageRoute<void>(
-                                  builder: (BuildContext context) =>
-                                      const DetailPageView(),
-                                ),
+                      child: Observer(builder: (context) {
+                        return viewModel.isLoading
+                            ? Center(child: CircularProgressIndicator())
+                            : ListView.builder(
+                                scrollDirection: Axis.horizontal,
+                                itemCount: 5,
+                                itemBuilder: (context, index) {
+                                  return InkWell(
+                                    onTap: () {
+                                      Navigator.push<void>(
+                                        context,
+                                        MaterialPageRoute<void>(
+                                          builder: (BuildContext context) =>
+                                          DetailPageView(id:viewModel.popularResponse!.results![index].id.toString()),
+                                        ),
+                                      );
+                                    },
+                                    child: Container(
+                                      clipBehavior: Clip.antiAliasWithSaveLayer,
+                                      margin: const EdgeInsets.all(10.0),
+                                      width: 150.0,
+                                      height: 90.0,
+                                      decoration: BoxDecoration(
+                                          color: Colors.white10,
+                                          borderRadius:
+                                              BorderRadius.circular(10.0)),
+                                      child: Image.network(
+                                        "https://image.tmdb.org/t/p/original" +
+                                            viewModel.popularResponse!
+                                                .results![index].posterPath!,
+                                        fit: BoxFit.cover,
+                                      ),
+                                    ),
+                                  );
+                                },
                               );
-                            },
-                            child: Container(
-                              clipBehavior: Clip.antiAliasWithSaveLayer,
-                              margin: const EdgeInsets.all(10.0),
-                              width: 150.0,
-                              height: 90.0,
-                              decoration: BoxDecoration(
-                                  color: Colors.white10,
-                                  borderRadius: BorderRadius.circular(10.0)),
-                              child: Image.network(
-                                "https://images.unsplash.com/photo-1601645191163-3fc0d5d64e35?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=735&q=80",
-                                fit: BoxFit.cover,
-                              ),
-                            ),
-                          );
-                        },
-                      )),
+                      })),
                   const Padding(
                     padding: EdgeInsets.only(left: 10.0, top: 20.0),
                     child: Text(
