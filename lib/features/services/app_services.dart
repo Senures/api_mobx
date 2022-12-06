@@ -2,6 +2,7 @@ import 'dart:developer';
 
 import 'package:dio/dio.dart';
 import 'package:movie_app_mobx/core/entity/detail_models.dart';
+import 'package:movie_app_mobx/core/entity/genresId_models.dart';
 import 'package:movie_app_mobx/core/entity/genres_models.dart';
 import 'package:movie_app_mobx/core/entity/now_playing.dart';
 import 'package:movie_app_mobx/core/entity/popular_movie_models.dart';
@@ -29,7 +30,7 @@ class AppServices {
 
   Future<DetailResponse?> getDetailMovie(String id) async {
     var response = await dio.get(
-      "movie/$id?api_key=$API_KEY=en-US",
+      "movie/$id?api_key=$API_KEY&language=en-US",
     );
 
     if (response.statusCode == 200) {
@@ -68,4 +69,21 @@ class AppServices {
 
     return null;
   }
+
+  Future<GenresIdResponse?> getGenresListBody(String id) async {
+    var response = await dio.get(
+      // "genre/movie/list?api_key=$API_KEY&language=en-US",
+      "list/$id?api_key=$API_KEY&language=en-US",
+    );
+
+    if (response.statusCode == 200) {
+      return GenresIdResponse.fromJson(response.data);
+    } else {
+      log("GenresResponse ERROR ===  ${response.statusCode}");
+    }
+
+    return null;
+  }
+
+  // https://api.themoviedb.org/3/list/28?api_key=$API_KEY&language=en-US
 }

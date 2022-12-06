@@ -73,6 +73,22 @@ mixin _$HomeViewModel on _HomeViewModelBase, Store {
     });
   }
 
+  late final _$genresIdResponseAtom =
+      Atom(name: '_HomeViewModelBase.genresIdResponse', context: context);
+
+  @override
+  GenresIdResponse? get genresIdResponse {
+    _$genresIdResponseAtom.reportRead();
+    return super.genresIdResponse;
+  }
+
+  @override
+  set genresIdResponse(GenresIdResponse? value) {
+    _$genresIdResponseAtom.reportWrite(value, super.genresIdResponse, () {
+      super.genresIdResponse = value;
+    });
+  }
+
   late final _$isLoadingAtom =
       Atom(name: '_HomeViewModelBase.isLoading', context: context);
 
@@ -102,6 +118,22 @@ mixin _$HomeViewModel on _HomeViewModelBase, Store {
   set genresId(String? value) {
     _$genresIdAtom.reportWrite(value, super.genresId, () {
       super.genresId = value;
+    });
+  }
+
+  late final _$isGenreAtom =
+      Atom(name: '_HomeViewModelBase.isGenre', context: context);
+
+  @override
+  bool get isGenre {
+    _$isGenreAtom.reportRead();
+    return super.isGenre;
+  }
+
+  @override
+  set isGenre(bool value) {
+    _$isGenreAtom.reportWrite(value, super.isGenre, () {
+      super.isGenre = value;
     });
   }
 
@@ -137,8 +169,35 @@ mixin _$HomeViewModel on _HomeViewModelBase, Store {
     return _$getGenreListAsyncAction.run(() => super.getGenreList());
   }
 
+  late final _$getGenreListBodyAsyncAction =
+      AsyncAction('_HomeViewModelBase.getGenreListBody', context: context);
+
+  @override
+  Future getGenreListBody(String id) {
+    return _$getGenreListBodyAsyncAction.run(() => super.getGenreListBody(id));
+  }
+
+  late final _$getDataAsyncAction =
+      AsyncAction('_HomeViewModelBase.getData', context: context);
+
+  @override
+  Future getData() {
+    return _$getDataAsyncAction.run(() => super.getData());
+  }
+
   late final _$_HomeViewModelBaseActionController =
       ActionController(name: '_HomeViewModelBase', context: context);
+
+  @override
+  dynamic setIsGenre(bool b) {
+    final _$actionInfo = _$_HomeViewModelBaseActionController.startAction(
+        name: '_HomeViewModelBase.setIsGenre');
+    try {
+      return super.setIsGenre(b);
+    } finally {
+      _$_HomeViewModelBaseActionController.endAction(_$actionInfo);
+    }
+  }
 
   @override
   dynamic setGenresId(String id) {
@@ -158,8 +217,10 @@ popularResponse: ${popularResponse},
 detailResponse: ${detailResponse},
 nowPlayingModel: ${nowPlayingModel},
 genresResponse: ${genresResponse},
+genresIdResponse: ${genresIdResponse},
 isLoading: ${isLoading},
-genresId: ${genresId}
+genresId: ${genresId},
+isGenre: ${isGenre}
     ''';
   }
 }

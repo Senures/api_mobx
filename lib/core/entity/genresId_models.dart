@@ -57,19 +57,19 @@ class GenresIdResponse {
 class Items {
   bool? adult;
   String? backdropPath;
-  List<int>? genreIds;
-  int? id;
+  List<num>? genreIds;
+  num? id;
   String? mediaType;
   String? originalLanguage;
   String? originalTitle;
   String? overview;
-  double? popularity;
+  num? popularity;
   String? posterPath;
   String? releaseDate;
   String? title;
   bool? video;
-  double? voteAverage;
-  int? voteCount;
+  num? voteAverage;
+  num? voteCount;
 
   Items(
       {this.adult,
