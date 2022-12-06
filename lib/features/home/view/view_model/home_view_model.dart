@@ -1,5 +1,7 @@
 import 'package:mobx/mobx.dart';
 import 'package:movie_app_mobx/core/entity/detail_models.dart';
+import 'package:movie_app_mobx/core/entity/genres_models.dart';
+import 'package:movie_app_mobx/core/entity/now_playing.dart';
 import 'package:movie_app_mobx/core/entity/popular_movie_models.dart';
 import 'package:movie_app_mobx/features/services/app_services.dart';
 part 'home_view_model.g.dart';
@@ -21,8 +23,17 @@ abstract class _HomeViewModelBase with Store {
   DetailResponse? detailResponse;
 
   @observable
+  NowPlayingModel? nowPlayingModel;
+
+  @observable
+  GenresResponse? genresResponse;
+
+  @observable
   bool isLoading = false;
   //bunun değeri boşken dolucak değişicek o yüzden observable
+
+  @observable
+  String? genresId;
 
 //notify listener aynı mantık
   @action
@@ -41,5 +52,28 @@ abstract class _HomeViewModelBase with Store {
     print(detailResponse!.toJson());
     // print("========================  " + popularResponse!.toJson().toString());
     isLoading = false;
+  }
+
+  @action
+  getNowPlaying() async {
+    isLoading = true;
+    nowPlayingModel = await AppServices().getNowPlaying();
+    print(nowPlayingModel!.toJson());
+    // print("========================  " + popularResponse!.toJson().toString());
+    isLoading = false;
+  }
+
+  @action
+  getGenreList() async {
+    isLoading = true;
+    genresResponse = await AppServices().getGenresList();
+    print(genresResponse!.toJson());
+    // print("========================  " + popularResponse!.toJson().toString());
+    isLoading = false;
+  }
+
+  @action
+  setGenresId(String id) {
+    genresId = id;
   }
 }

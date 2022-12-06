@@ -14,6 +14,8 @@ class HomePageView extends StatelessWidget {
         viewModel: HomeViewModel(),
         onInit: (viewModel) {
           viewModel.getPopularMovies();
+          viewModel.getNowPlaying();
+          viewModel.getGenreList();
         },
         onPageView: (context, viewModel) {
           return Scaffold(
@@ -23,7 +25,7 @@ class HomePageView extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   // MODELVIEW A BİŞET EKLEDİĞİN ZAMAN
-                  // WATCH AKTİF ET nasıl ya
+                  // WATCH AKTİF ET
                   SafeArea(
                     child: Container(
                       width: MediaQuery.of(context).size.width,
@@ -32,46 +34,103 @@ class HomePageView extends StatelessWidget {
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceAround,
                         children: [
-                          Image.asset(
-                            "assets/d.png",
-                            width: 50.0,
+                          Padding(
+                            padding: const EdgeInsets.only(top: 15.0),
+                            child: Image.asset(
+                              "assets/d.png",
+                              width: 50.0,
+                            ),
                           ),
-                          Container(
-                            alignment: Alignment.center,
-                            width: 190,
-                            height: 30,
-                            decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(20.0),
-                                gradient: const LinearGradient(colors: [
-                                  Color(0xff0B0D35),
-                                  Color(0xff0B0D35)
-                                ])),
-                            child: const Text(
-                              "Search",
-                              style: TextStyle(
-                                  color: Colors.white,
-                                  fontWeight: FontWeight.w500,
-                                  letterSpacing: .5),
+                          Padding(
+                            padding: const EdgeInsets.only(top: 15.0),
+                            child: Container(
+                              alignment: Alignment.center,
+                              width: 190,
+                              height: 30,
+                              decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(10.0),
+                                  gradient: const LinearGradient(colors: [
+                                    Color(0xff0B0D35),
+                                    Color(0xff0B0D35)
+                                  ])),
+                              child: const Text(
+                                "Search",
+                                style: TextStyle(
+                                    color: Colors.white,
+                                    fontWeight: FontWeight.w500,
+                                    letterSpacing: .5),
+                              ),
                             ),
                           ),
                           Image.asset(
                             "assets/ra.png",
-                            width: 100.0,
+                            width: 90.0,
                           )
                         ],
                       ),
                     ),
                   ),
-                  // YEMEK YİCEM GELİRİM.....
+                  const Padding(
+                    padding:
+                        EdgeInsets.only(left: 10.0, top: 20.0, bottom: 5.0),
+                    child: Text(
+                      "Best Genre",
+                      style: TextStyle(
+                          color: Colors.white,
+                          fontWeight: FontWeight.bold,
+                          fontSize: 23.0),
+                    ),
+                  ),
+                  Container(
+                      height: MediaQuery.of(context).size.height * 0.07,
+                      //color: Colors.black,
+                      child: Observer(builder: (context) {
+                        return ListView.builder(
+                          scrollDirection: Axis.horizontal,
+                          itemCount: viewModel.genresResponse?.genres?.length,
+                          itemBuilder: (context, index) {
+                            return viewModel.isLoading
+                                ? const CircularProgressIndicator()
+                                : InkWell(
+                                    onTap: () {
+                                      viewModel.setGenresId(viewModel
+                                          .genresResponse!.genres![index].id
+                                          .toString());
+                                    },
+                                    child: Container(
+                                      alignment: Alignment.center,
+                                      margin: const EdgeInsets.all(10.0),
+                                      padding: const EdgeInsets.symmetric(
+                                          horizontal: 15.0, vertical: 8.0),
+                                      height: 100.0,
+                                      decoration: BoxDecoration(
+                                          color: Colors.white10,
+                                          borderRadius:
+                                              BorderRadius.circular(7.0)),
+                                      child: Text(
+                                        viewModel.genresResponse!.genres![index]
+                                            .name!,
+                                        style: const TextStyle(
+                                            color: Colors.white,
+                                            fontSize: 17.0,
+                                            fontWeight: FontWeight.bold),
+                                      ),
+                                    ),
+                                  );
+                          },
+                        );
+                      })),
+
                   Container(
                       height: MediaQuery.of(context).size.height * 0.5,
-                      //color: Colors.black,
+                      color: Colors.black,
                       child: Observer(builder: (context) {
                         return viewModel.isLoading
                             ? Center(child: CircularProgressIndicator())
                             : ListView.builder(
                                 scrollDirection: Axis.horizontal,
-                                itemCount: 5,
+                                itemCount:
+                                    viewModel.popularResponse?.results?.length,
                                 itemBuilder: (context, index) {
                                   return InkWell(
                                     onTap: () {
@@ -79,25 +138,35 @@ class HomePageView extends StatelessWidget {
                                         context,
                                         MaterialPageRoute<void>(
                                           builder: (BuildContext context) =>
-                                          DetailPageView(id:viewModel.popularResponse!.results![index].id.toString()),
+                                              DetailPageView(
+                                                  id: viewModel.popularResponse!
+                                                      .results![index].id
+                                                      .toString()),
                                         ),
                                       );
                                     },
-                                    child: Container(
-                                      clipBehavior: Clip.antiAliasWithSaveLayer,
-                                      margin: const EdgeInsets.all(10.0),
-                                      width: 150.0,
-                                      height: 90.0,
-                                      decoration: BoxDecoration(
-                                          color: Colors.white10,
-                                          borderRadius:
-                                              BorderRadius.circular(10.0)),
-                                      child: Image.network(
-                                        "https://image.tmdb.org/t/p/original" +
-                                            viewModel.popularResponse!
-                                                .results![index].posterPath!,
-                                        fit: BoxFit.cover,
-                                      ),
+                                    child: Stack(
+                                      children: [
+                                        Container(
+                                          clipBehavior:
+                                              Clip.antiAliasWithSaveLayer,
+                                          margin: const EdgeInsets.all(10.0),
+                                          width: 150.0,
+                                          height: 400.0,
+                                          decoration: BoxDecoration(
+                                              color: Colors.white10,
+                                              borderRadius:
+                                                  BorderRadius.circular(10.0)),
+                                          child: Image.network(
+                                            "https://image.tmdb.org/t/p/original" +
+                                                viewModel
+                                                    .popularResponse!
+                                                    .results![index]
+                                                    .posterPath!,
+                                            fit: BoxFit.cover,
+                                          ),
+                                        ),
+                                      ],
                                     ),
                                   );
                                 },
@@ -106,7 +175,7 @@ class HomePageView extends StatelessWidget {
                   const Padding(
                     padding: EdgeInsets.only(left: 10.0, top: 20.0),
                     child: Text(
-                      "Trending Now",
+                      "Now Playing",
                       style: TextStyle(
                           color: Colors.white,
                           fontWeight: FontWeight.bold,
@@ -117,51 +186,33 @@ class HomePageView extends StatelessWidget {
                       //clipBehavior: Clip.antiAliasWithSaveLayer,
                       height: MediaQuery.of(context).size.height * 0.2,
                       //color: Colors.black,
-                      child: ListView.builder(
-                        scrollDirection: Axis.horizontal,
-                        itemCount: 3,
-                        itemBuilder: (context, index) {
-                          return Container(
-                            margin: const EdgeInsets.all(10.0),
-                            width: 150.0,
-                            height: 100.0,
-                            decoration: BoxDecoration(
-                                color: Colors.white10,
-                                borderRadius: BorderRadius.circular(10.0)),
-                            child: Image.network(
-                              "https://images.unsplash.com/photo-1593345216166-6a6cbf185ba0?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1yZWxhdGVkfDE1fHx8ZW58MHx8fHw%3D&auto=format&fit=crop&w=500&q=60",
-                              fit: BoxFit.cover,
-                            ),
-                          );
-                        },
-                      )),
-                  const Padding(
-                    padding: EdgeInsets.only(left: 10.0, top: 20.0),
-                    child: Text(
-                      "Best Genre",
-                      style: TextStyle(
-                          color: Colors.white,
-                          fontWeight: FontWeight.bold,
-                          fontSize: 20.0),
-                    ),
-                  ),
-                  Container(
-                      height: MediaQuery.of(context).size.height * 0.13,
-                      //color: Colors.black,
-                      child: ListView.builder(
-                        scrollDirection: Axis.horizontal,
-                        itemCount: 5,
-                        itemBuilder: (context, index) {
-                          return Container(
-                            margin: const EdgeInsets.all(10.0),
-                            width: 150.0,
-                            height: 100.0,
-                            decoration: BoxDecoration(
-                                color: Colors.white10,
-                                borderRadius: BorderRadius.circular(10.0)),
-                          );
-                        },
-                      )),
+                      child: Observer(builder: (context) {
+                        return viewModel.isLoading
+                            ? CircularProgressIndicator()
+                            : ListView.builder(
+                                scrollDirection: Axis.horizontal,
+                                itemCount:
+                                    viewModel.nowPlayingModel?.results?.length,
+                                itemBuilder: (context, index) {
+                                  return Container(
+                                    clipBehavior: Clip.antiAliasWithSaveLayer,
+                                    margin: const EdgeInsets.all(10.0),
+                                    width: 150.0,
+                                    height: 100.0,
+                                    decoration: BoxDecoration(
+                                        color: Colors.white10,
+                                        borderRadius:
+                                            BorderRadius.circular(10.0)),
+                                    child: Image.network(
+                                      "https://image.tmdb.org/t/p/original" +
+                                          viewModel.nowPlayingModel!
+                                              .results![index].backdropPath!,
+                                      fit: BoxFit.cover,
+                                    ),
+                                  );
+                                },
+                              );
+                      })),
                 ],
               ),
             ),

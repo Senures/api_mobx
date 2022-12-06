@@ -41,6 +41,38 @@ mixin _$HomeViewModel on _HomeViewModelBase, Store {
     });
   }
 
+  late final _$nowPlayingModelAtom =
+      Atom(name: '_HomeViewModelBase.nowPlayingModel', context: context);
+
+  @override
+  NowPlayingModel? get nowPlayingModel {
+    _$nowPlayingModelAtom.reportRead();
+    return super.nowPlayingModel;
+  }
+
+  @override
+  set nowPlayingModel(NowPlayingModel? value) {
+    _$nowPlayingModelAtom.reportWrite(value, super.nowPlayingModel, () {
+      super.nowPlayingModel = value;
+    });
+  }
+
+  late final _$genresResponseAtom =
+      Atom(name: '_HomeViewModelBase.genresResponse', context: context);
+
+  @override
+  GenresResponse? get genresResponse {
+    _$genresResponseAtom.reportRead();
+    return super.genresResponse;
+  }
+
+  @override
+  set genresResponse(GenresResponse? value) {
+    _$genresResponseAtom.reportWrite(value, super.genresResponse, () {
+      super.genresResponse = value;
+    });
+  }
+
   late final _$isLoadingAtom =
       Atom(name: '_HomeViewModelBase.isLoading', context: context);
 
@@ -54,6 +86,22 @@ mixin _$HomeViewModel on _HomeViewModelBase, Store {
   set isLoading(bool value) {
     _$isLoadingAtom.reportWrite(value, super.isLoading, () {
       super.isLoading = value;
+    });
+  }
+
+  late final _$genresIdAtom =
+      Atom(name: '_HomeViewModelBase.genresId', context: context);
+
+  @override
+  String? get genresId {
+    _$genresIdAtom.reportRead();
+    return super.genresId;
+  }
+
+  @override
+  set genresId(String? value) {
+    _$genresIdAtom.reportWrite(value, super.genresId, () {
+      super.genresId = value;
     });
   }
 
@@ -73,12 +121,45 @@ mixin _$HomeViewModel on _HomeViewModelBase, Store {
     return _$getDetailMoviesAsyncAction.run(() => super.getDetailMovies(id));
   }
 
+  late final _$getNowPlayingAsyncAction =
+      AsyncAction('_HomeViewModelBase.getNowPlaying', context: context);
+
+  @override
+  Future getNowPlaying() {
+    return _$getNowPlayingAsyncAction.run(() => super.getNowPlaying());
+  }
+
+  late final _$getGenreListAsyncAction =
+      AsyncAction('_HomeViewModelBase.getGenreList', context: context);
+
+  @override
+  Future getGenreList() {
+    return _$getGenreListAsyncAction.run(() => super.getGenreList());
+  }
+
+  late final _$_HomeViewModelBaseActionController =
+      ActionController(name: '_HomeViewModelBase', context: context);
+
+  @override
+  dynamic setGenresId(String id) {
+    final _$actionInfo = _$_HomeViewModelBaseActionController.startAction(
+        name: '_HomeViewModelBase.setGenresId');
+    try {
+      return super.setGenresId(id);
+    } finally {
+      _$_HomeViewModelBaseActionController.endAction(_$actionInfo);
+    }
+  }
+
   @override
   String toString() {
     return '''
 popularResponse: ${popularResponse},
 detailResponse: ${detailResponse},
-isLoading: ${isLoading}
+nowPlayingModel: ${nowPlayingModel},
+genresResponse: ${genresResponse},
+isLoading: ${isLoading},
+genresId: ${genresId}
     ''';
   }
 }
